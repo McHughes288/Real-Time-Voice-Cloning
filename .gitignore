@@ -14,7 +14,9 @@
 *.bcf
 *.toc
 *.wav
-*.sh
+*.zip
+.vscode
+output
 encoder/saved_models/*
 synthesizer/saved_models/*
 vocoder/saved_models/*

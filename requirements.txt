@@ -1,5 +1,6 @@
 tensorflow-cpu
 torch
+gdown
 umap-learn
 visdom
 webrtcvad
