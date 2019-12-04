@@ -1,5 +1,7 @@
 tensorflow-cpu
 torch
+adafruit-circuitpython-charlcd
+gdown
 umap-learn
 visdom
 webrtcvad
