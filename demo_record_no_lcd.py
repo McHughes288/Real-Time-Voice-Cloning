@@ -10,24 +10,6 @@ import argparse
 import torch
 import sys
 
-import time
-import board
-import busio
-import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
-
-
-def lcd_message(message, lcd, scroll=True):
-    lcd.clear()
-    lcd.blink = True
-    lcd.message = message
-    if scroll:
-        for i in range(len(message)):
-            time.sleep(0.2)
-            lcd.move_left()
-        lcd.clear()
-        lcd.message = message
-    
-
 if __name__ == '__main__':
     ## Info & args
     parser = argparse.ArgumentParser(
@@ -50,43 +32,33 @@ if __name__ == '__main__':
         import sounddevice as sd
 
     
-    lcd_columns = 16
-    lcd_rows = 2
-    # Initialise I2C bus.
-    i2c = busio.I2C(board.SCL, board.SDA)
-    # Initialise the LCD class
-    lcd = character_lcd.Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
-    
-    lcd.clear()
-    # Set LCD color to blue
-    lcd.color = [0, 100, 0]
-    lcd.message = "Hackamatics 2019\nVoice Cloning"
-    time.sleep(1)
 
     ## Load the models one by one.
     print("Preparing the encoder, the synthesizer and the vocoder...")
-    lcd.clear()
-    lcd.message = "Preparing models... \n"
+   
     encoder.load_model(args.enc_model_fpath)
-    synthesizer = Synthesizer(args.syn_model_dir.joinpath("taco_pretrained"))
+    synthesizer = Synthesizer(args.syn_model_dir.joinpath("taco_pretrained"), low_mem=args.low_mem)
     vocoder.load_model(args.voc_model_fpath)
     
     print("Interactive generation loop")
     num_generated = 0
+    fs=44100
+    rec_duration = 10  # seconds
     while True:
         try:
+            
+
             # Get the reference audio filepath
             lcd.clear()
-            lcd.message = "Loading John's voice"
-            # message = "Reference voice: enter an audio filepath of a voice to be cloned (wav):\n"
-            # in_fpath = Path(input(message).replace("\"", "").replace("\'", ""))
-            in_fpath = "demo/johns_voice.wav"
+            lcd.message = "Speak into the microphone\n Time left: %is" % rec_duration  # seconds
+
+            
+            myrecording = sd.rec(rec_duration * fs, samplerate=fs, channels=1, dtype='float64')
+            print("Recording Audio")
+            sd.wait()
             
             ## Computing the embedding
-            original_wav, sampling_rate = librosa.load(in_fpath)
-            preprocessed_wav = encoder.preprocess_wav(original_wav, sampling_rate)
-            lcd.clear()
-            lcd.message = "Loaded file succesfully \n"
+            preprocessed_wav = encoder.preprocess_wav(myrecording, fs)
             print("Loaded file succesfully")
             
             # Then we derive the embedding.
@@ -95,12 +67,7 @@ if __name__ == '__main__':
             
             
             ## Generating the spectrogram
-            # lcd.clear()
-            # lcd.message = "Write a sentence \n"
-            # text = input("Write a sentence (+-20 words) to be synthesized:\n")
-            
             text = "Hello, this is a synthesized version of John's voice"
-            lcd_message("Using sample sentence: %s..." % text, lcd)
             
             # The synthesizer works in batch, so you need to put your data in a list or numpy array
             specs = synthesizer.synthesize_spectrograms([text], [embed])
@@ -109,8 +76,6 @@ if __name__ == '__main__':
             
             
             ## Generating the waveform
-            lcd.clear()
-            lcd.message = "Synthesizing the waveform \n"
             print("Synthesizing the waveform")
             generated_wav = vocoder.infer_waveform(spec)
             
@@ -129,15 +94,7 @@ if __name__ == '__main__':
             librosa.output.write_wav(fpath, generated_wav.astype(np.float32), 
                                      synthesizer.sample_rate)
             num_generated += 1
-            lcd.clear()
-            lcd.message = "Saved output as \n %s" % fpath
             print("\nSaved output as %s\n\n" % fpath)
-
-            time.sleep(1)
-            lcd.color = [0, 0, 0]
-            lcd.clear()
-            time.sleep(1)
-            
             
         except Exception as e:
             print("Caught exception: %s" % repr(e))
