@@ -73,18 +73,27 @@ if __name__ == '__main__':
     
     print("Interactive generation loop")
     num_generated = 0
+    fs=44100
+    rec_duration = 10  # seconds
     while True:
         try:
+            
+
             # Get the reference audio filepath
             lcd.clear()
-            lcd.message = "Loading John's voice"
-            # message = "Reference voice: enter an audio filepath of a voice to be cloned (wav):\n"
-            # in_fpath = Path(input(message).replace("\"", "").replace("\'", ""))
-            in_fpath = "demo/johns_voice.wav"
+            lcd.message = "Speak into the microphone\n Time left: %is" % rec_duration  # seconds
+
+            
+            myrecording = sd.rec(rec_duration * fs, samplerate=fs, channels=1, dtype='float64')
+            print("Recording Audio")
+            time.sleep(1)
+            for dur in range(rec_duration-1,0,-1):
+                lcd.message = "Speak into the microphone\n Time left: %is" % dur  # seconds
+                time.sleep(1)
+            sd.wait()
             
             ## Computing the embedding
-            original_wav, sampling_rate = librosa.load(in_fpath)
-            preprocessed_wav = encoder.preprocess_wav(original_wav, sampling_rate)
+            preprocessed_wav = encoder.preprocess_wav(myrecording, fs)
             lcd.clear()
             lcd.message = "Loaded file succesfully \n"
             print("Loaded file succesfully")
@@ -95,10 +104,6 @@ if __name__ == '__main__':
             
             
             ## Generating the spectrogram
-            # lcd.clear()
-            # lcd.message = "Write a sentence \n"
-            # text = input("Write a sentence (+-20 words) to be synthesized:\n")
-            
             text = "Hello, this is a synthesized version of John's voice"
             lcd_message("Using sample sentence: %s..." % text, lcd)
             
