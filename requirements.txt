@@ -16,3 +16,7 @@ Unidecode
 inflect
 multiprocess
 numba
+
+black
+flake8
+pylint
