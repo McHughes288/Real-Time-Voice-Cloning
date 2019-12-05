@@ -16,7 +16,11 @@ def jobs_post(
     tmp_dir="",
 ) -> str:
 
-    print("Preparing the encoder, the synthesizer and the vocoder...")
+    print("Batch API starting...")
+    print(audio)
+    print("text: %s" % text)
+
+    print("\nPreparing the encoder, the synthesizer and the vocoder...")
 
     encoder.load_model(enc_model_fpath)
     synthesizer = Synthesizer(syn_model_dir, verbose=False,)
