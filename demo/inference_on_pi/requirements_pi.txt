@@ -1,5 +1,4 @@
-tensorflow>=1.10.0,<=1.14.0
-torch
+tensorflow
 adafruit-circuitpython-charlcd
 gdown
 umap-learn

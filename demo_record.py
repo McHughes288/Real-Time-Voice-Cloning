@@ -1,8 +1,8 @@
-from encoder.params_model import model_embedding_size as speaker_embedding_size
-from utils.argutils import print_args
-from synthesizer.inference import Synthesizer
-from encoder import inference as encoder
-from vocoder import inference as vocoder
+from inference.encoder.params_model import model_embedding_size as speaker_embedding_size
+from inference.utils.argutils import print_args
+from inference.synthesizer.inference import Synthesizer
+from inference.encoder import inference as encoder
+from inference.vocoder import inference as vocoder
 from pathlib import Path
 import numpy as np
 import librosa
@@ -34,13 +34,13 @@ if __name__ == '__main__':
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument("-e", "--enc_model_fpath", type=Path, 
-                        default="encoder/saved_models/pretrained.pt",
+                        default="inference/encoder/saved_models/pretrained.pt",
                         help="Path to a saved encoder")
     parser.add_argument("-s", "--syn_model_dir", type=Path, 
-                        default="synthesizer/saved_models/logs-pretrained/",
+                        default="inference/synthesizer/saved_models/logs-pretrained/",
                         help="Directory containing the synthesizer model")
     parser.add_argument("-v", "--voc_model_fpath", type=Path, 
-                        default="vocoder/saved_models/pretrained/pretrained.pt",
+                        default="inference/vocoder/saved_models/pretrained/pretrained.pt",
                         help="Path to a saved vocoder")
     parser.add_argument("--no_sound", action="store_true", help=\
         "If True, audio won't be played.")

@@ -19,6 +19,6 @@
 *.zip
 .vscode
 output
-encoder/saved_models/*
-synthesizer/saved_models/*
-vocoder/saved_models/*
+inference/encoder/saved_models/*
+inference/synthesizer/saved_models/*
+inference/vocoder/saved_models/*
