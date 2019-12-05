@@ -1,0 +1,12 @@
+#!/usr/bin/python3
+
+import connexion
+
+if __name__ == "__main__":
+    app = connexion.App(__name__, specification_dir="./apis/batch/swagger/")
+    app.add_api(
+        "swagger.yaml",
+        arguments={
+            "title": "The Voice Cloning REST API is used to submit recorded audio "
+            "and text to speak. It returns the synthesized voice."})
+    app.run(port=8080)

@@ -71,7 +71,6 @@ definitions:
   JobResponse:
     type: "object"
     required:
-    - "format"
     - "result"
     properties:
       result:
