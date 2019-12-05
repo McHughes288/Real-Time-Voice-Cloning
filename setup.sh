@@ -1,29 +1,26 @@
 #!/bin/bash
 
 VENV=$HOME/venv_cloning
-ROOT_CLONE=$HOME/git/Real-Time-Voice-Cloning
+ROOT_CLONE=$HOME/git/voice_cloning
 
 if [ ! -d $VENV ]; then
 echo "Creating $VENV"
-    virtualenv --system-site-packages -p python3 $HOME/venv_cloning
+    virtualenv -p python3 $VENV
 fi
 
 echo "Starting venv..."
-source ~/venv_cloning/bin/activate
+source $VENV/bin/activate
 
 echo "Installing requirements..."
-pip3 install -r requirements.txt
+pip3 install -r $ROOT_CLONE/requirements.txt
 
-if [ ! -f $ROOT_CLONE/pretrained.zip ]; then
+if [ ! -f $ROOT_CLONE/inference/pretrained.zip ]; then
     echo "Downloading pretrained models..."
-    gdown https://drive.google.com/uc?id=1n1sPXvT34yXFLT47QZA6FIRGrwMeSsZc
-    unzip $ROOT_CLONE/pretrained.zip
-    mkdir -p $ROOT_CLONE/output
-    gdown https://drive.google.com/uc?id=1D3A5YSWiY-EnRWzWbzSqvj4YdY90wuXq
-    pip3 install torch-1.0.0a0+8322165-cp37-cp37m-linux_armv7l.whl
+    gdown -O $ROOT_CLONE/inference/pretrained.zip https://drive.google.com/uc?id=1n1sPXvT34yXFLT47QZA6FIRGrwMeSsZc
+    unzip $ROOT_CLONE/inference/pretrained.zip -d $ROOT_CLONE/inference
 fi
 
-python3 demo_lcd.py
+mkdir -p $ROOT_CLONE/output
 
 
 
