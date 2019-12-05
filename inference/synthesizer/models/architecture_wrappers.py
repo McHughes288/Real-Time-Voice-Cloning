@@ -3,7 +3,7 @@ All notations and variable names were used in concordance with originial tensorf
 """
 import collections
 import tensorflow as tf
-from synthesizer.models.attention import _compute_attention
+from inference.synthesizer.models.attention import _compute_attention
 from tensorflow.contrib.rnn import RNNCell
 from tensorflow.python.framework import ops, tensor_shape
 from tensorflow.python.ops import array_ops, check_ops, rnn_cell_impl, tensor_array_ops
@@ -35,7 +35,7 @@ class TacotronEncoderCell(RNNCell):
 		#Pass input sequence through a stack of convolutional layers
 		conv_output = self._convolutions(inputs)
 
-		#Extract hidden representation from encoder lstm cells
+		#Extract hidden representation from inference.encoder lstm cells
 		hidden_representation = self._cell(conv_output, input_lengths)
 
 		#For shape visualization

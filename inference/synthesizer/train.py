@@ -1,10 +1,10 @@
-from synthesizer.utils.symbols import symbols
-from synthesizer.utils.text import sequence_to_text
-from synthesizer.hparams import hparams_debug_string
-from synthesizer.feeder import Feeder
-from synthesizer.models import create_model
-from synthesizer.utils import ValueWindow, plot
-from synthesizer import infolog, audio
+from inference.synthesizer.utils.symbols import symbols
+from inference.synthesizer.utils.text import sequence_to_text
+from inference.synthesizer.hparams import hparams_debug_string
+from inference.synthesizer.feeder import Feeder
+from inference.synthesizer.models import create_model
+from inference.synthesizer.utils import ValueWindow, plot
+from inference.synthesizer import infolog, audio
 from datetime import datetime
 from tqdm import tqdm
 import tensorflow as tf

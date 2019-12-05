@@ -1,5 +1,5 @@
-from utils.argutils import print_args
-from encoder.train import train
+from inference.utils.argutils import print_args
+from inference.encoder.train import train
 from pathlib import Path
 import argparse
 

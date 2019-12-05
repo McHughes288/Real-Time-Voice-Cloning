@@ -1,6 +1,6 @@
 from sklearn.model_selection import train_test_split
-from synthesizer.utils.text import text_to_sequence
-from synthesizer.infolog import log
+from inference.synthesizer.utils.text import text_to_sequence
+from inference.synthesizer.infolog import log
 import tensorflow as tf
 import numpy as np
 import threading

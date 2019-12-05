@@ -1,7 +1,7 @@
-from synthesizer.hparams import hparams
-from synthesizer.train import tacotron_train
-from utils.argutils import print_args
-from synthesizer import infolog
+from inference.synthesizer.hparams import hparams
+from inference.synthesizer.train import tacotron_train
+from inference.utils.argutils import print_args
+from inference.synthesizer import infolog
 import argparse
 import os
 

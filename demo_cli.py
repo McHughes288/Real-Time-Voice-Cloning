@@ -1,8 +1,8 @@
-from encoder.params_model import model_embedding_size as speaker_embedding_size
-from utils.argutils import print_args
-from synthesizer.inference import Synthesizer
-from encoder import inference as encoder
-from vocoder import inference as vocoder
+from inference.encoder.params_model import model_embedding_size as speaker_embedding_size
+from inference.utils.argutils import print_args
+from inference.synthesizer.inference import Synthesizer
+from inference.encoder import inference as encoder
+from inference.vocoder import inference as vocoder
 from pathlib import Path
 import numpy as np
 import librosa

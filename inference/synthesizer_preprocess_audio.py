@@ -1,6 +1,6 @@
-from synthesizer.preprocess import preprocess_librispeech
-from synthesizer.hparams import hparams
-from utils.argutils import print_args
+from inference.synthesizer.preprocess import preprocess_librispeech
+from inference.synthesizer.hparams import hparams
+from inference.utils.argutils import print_args
 from pathlib import Path
 import argparse
 
