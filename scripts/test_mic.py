@@ -17,7 +17,7 @@ myrecording = np.squeeze(myrecording)
 print(myrecording.shape)
 print(type(myrecording[0]))
 
-fpath="johns_voice3.wav"
+fpath="output/johns_voice3.wav"
 librosa.output.write_wav(fpath, myrecording, fs) # needs float32
 #wavio.write(fpath, myrecording, fs) # needs int32
 
