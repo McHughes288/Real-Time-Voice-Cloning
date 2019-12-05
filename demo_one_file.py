@@ -17,21 +17,21 @@ if __name__ == "__main__":
         "-e",
         "--enc_model_fpath",
         type=Path,
-        default="inference/encoder/saved_models/pretrained.pt",
+        default="functests/models/encoder/saved_models/pretrained.pt",
         help="Path to a saved encoder",
     )
     parser.add_argument(
         "-s",
         "--syn_model_dir",
         type=Path,
-        default="inference/synthesizer/saved_models/logs-pretrained/",
+        default="functests/models/synthesizer/saved_models/logs-pretrained",
         help="Directory containing the synthesizer model",
     )
     parser.add_argument(
         "-v",
         "--voc_model_fpath",
         type=Path,
-        default="inference/vocoder/saved_models/pretrained/pretrained.pt",
+        default="functests/models/vocoder/saved_models/pretrained/pretrained.pt",
         help="Path to a saved vocoder",
     )
     parser.add_argument(

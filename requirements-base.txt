@@ -1,11 +1,7 @@
 tensorflow>=1.10.0,<=1.14.0
 torch
-adafruit-circuitpython-charlcd
-gdown
-wavio
 umap-learn
 visdom
-webrtcvad
 librosa
 matplotlib
 numpy
@@ -16,9 +12,5 @@ Unidecode
 inflect
 multiprocess
 numba
-
-black
-flake8
-pylint
-pytest
-pytest-cov
+connexion
+webrtcvad

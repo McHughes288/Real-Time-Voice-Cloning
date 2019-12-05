@@ -19,6 +19,7 @@
 *.zip
 .vscode
 ut_results.xml
+build
 output
 functests/models
 inference/encoder/saved_models/*
