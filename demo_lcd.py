@@ -59,7 +59,7 @@ if __name__ == '__main__':
     
     lcd.clear()
     # Set LCD color to blue
-    lcd.color = [0, 100, 0]
+    lcd.color = [100, 100, 100]
     lcd.message = "Hackamatics 2019\nVoice Cloning"
     time.sleep(1)
 
