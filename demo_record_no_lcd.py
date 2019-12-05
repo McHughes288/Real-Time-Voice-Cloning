@@ -73,7 +73,7 @@ if __name__ == "__main__":
     # rec_path = "output/demo_record_%02d.wav" % num_generated
     # wavio.write(rec_path, myrecording, fs)
 
-    in_fpath = "demo/johns_voice3.wav"
+    in_fpath = "./functests/data/johns_voice3.wav"
 
     ## Computing the embedding
     preprocessed_wav = encoder.preprocess_wav(in_fpath)
@@ -104,7 +104,8 @@ if __name__ == "__main__":
         sd.play(generated_wav, synthesizer.sample_rate)
 
     # Save it on the disk
-    fpath = "output/demo_output_%02d.wav" % num_generated
+    # fpath = "output/demo_output_%02d.wav" % num_generated
+    fpath = "./functests/data/johns_generated.wav"
     print(generated_wav.shape)
     print(synthesizer.sample_rate)
     librosa.output.write_wav(

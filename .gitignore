@@ -14,11 +14,13 @@
 *.bcf
 *.toc
 *.wav
-!johns_voice*.wav
+!johns_*.wav
 *.whl
 *.zip
 .vscode
+ut_results.xml
 output
+functests/models
 inference/encoder/saved_models/*
 inference/synthesizer/saved_models/*
 inference/vocoder/saved_models/*

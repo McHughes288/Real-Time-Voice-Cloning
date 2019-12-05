@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import numpy as np
 from inference.encoder import inference as encoder
@@ -9,19 +10,20 @@ from inference.vocoder import inference as vocoder
 def jobs_post(
     audio,
     text,
-    enc_model_fpath="/model/encoder.pt",
-    syn_model_dir="/model/synthesizer/",
-    voc_model_fpath="/model/vocoder.pt",
+    enc_model_fpath=Path("/model/encoder.pt"),
+    syn_model_dir=Path("/model/synthesizer/"),
+    voc_model_fpath=Path("/model/vocoder.pt"),
+    tmp_dir="",
 ) -> str:
 
     print("Preparing the encoder, the synthesizer and the vocoder...")
 
     encoder.load_model(enc_model_fpath)
-    synthesizer = Synthesizer(syn_model_dir.joinpath("taco_pretrained"), verbose=False,)
+    synthesizer = Synthesizer(syn_model_dir, verbose=False,)
     vocoder.load_model(voc_model_fpath)
 
     # save file locally in container
-    in_fpath = "/temp.audio"
+    in_fpath = tmp_dir + "/temp.audio"
     audio.save(in_fpath)
 
     ## Computing the embedding
@@ -43,15 +45,15 @@ def jobs_post(
 
     ## Post-generation
     generated_wav = np.pad(generated_wav, (0, synthesizer.sample_rate), mode="constant")
+    generated_wav_to_send = generated_wav.astype(np.float32).tolist()
 
     data = {}
     data["result"] = {
-        "generated_voice": generated_wav.astype(np.float32),
-        "synthesizer_sample_rate": synthesizer.sample_rate,
+        "generated_voice": generated_wav_to_send,
+        "sample_rate": synthesizer.sample_rate,
     }
 
-    # librosa.output.write_wav(
-    #     fpath, generated_wav.astype(np.float32), synthesizer.sample_rate
-    # )
+    print("\n")
+    print(generated_wav.shape, synthesizer.sample_rate)
 
     return json.dumps(data)

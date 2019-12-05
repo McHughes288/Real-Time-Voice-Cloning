@@ -1,7 +1,9 @@
 .DEFAULT_GOAL=all
+cov_dir:=htmlcov
+pytest_args:= -v --color=yes --junit-xml ut_results.xml --cov-report=html:$(cov_dir) --cov-report=term --disable-pytest-warnings
 includes="apis *.py"
 
-all: deps check
+all: deps check test
 
 deps:
 	./scripts/setup.sh
@@ -17,3 +19,6 @@ clean:
 	find . -name __pycache__ -delete
 format:
 	black "${includes}"
+test: functest
+functest:
+	pytest $(pytest_args) functests
