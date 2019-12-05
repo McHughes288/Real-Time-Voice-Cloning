@@ -1,10 +1,10 @@
-from toolbox.ui import UI
-from encoder import inference as encoder
-from synthesizer.inference import Synthesizer
-from vocoder import inference as vocoder
+from inference.toolbox.ui import UI
+from inference.encoder import inference as encoder
+from inference.synthesizer.inference import Synthesizer
+from inference.vocoder import inference as vocoder
 from pathlib import Path
 from time import perf_counter as timer
-from toolbox.utterance import Utterance
+from inference.toolbox.utterance import Utterance
 import numpy as np
 import traceback
 import sys

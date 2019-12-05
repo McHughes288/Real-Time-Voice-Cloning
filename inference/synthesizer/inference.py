@@ -1,8 +1,8 @@
-from synthesizer.tacotron2 import Tacotron2
-from synthesizer.hparams import hparams
+from inference.synthesizer.tacotron2 import Tacotron2
+from inference.synthesizer.hparams import hparams
 from multiprocess.pool import Pool  # You're free to use either one
 #from multiprocessing import Pool   # 
-from synthesizer import audio
+from inference.synthesizer import audio
 from pathlib import Path
 from typing import Union, List
 import tensorflow as tf

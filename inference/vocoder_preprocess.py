@@ -1,6 +1,6 @@
-from synthesizer.synthesize import run_synthesis
-from synthesizer.hparams import hparams
-from utils.argutils import print_args
+from inference.synthesizer.synthesize import run_synthesis
+from inference.synthesizer.hparams import hparams
+from inference.utils.argutils import print_args
 import argparse
 import os
 

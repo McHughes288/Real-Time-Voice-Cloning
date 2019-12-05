@@ -1,10 +1,10 @@
 from multiprocessing.pool import Pool 
-from synthesizer import audio
+from inference.synthesizer import audio
 from functools import partial
 from itertools import chain
-from encoder import inference as encoder
+from inference.encoder import inference as encoder
 from pathlib import Path
-from utils import logmmse
+from inference.utils import logmmse
 from tqdm import tqdm
 import numpy as np
 import librosa

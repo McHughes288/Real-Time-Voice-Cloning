@@ -1,5 +1,5 @@
-from synthesizer.preprocess import create_embeddings
-from utils.argutils import print_args
+from inference.synthesizer.preprocess import create_embeddings
+from inference.utils.argutils import print_args
 from pathlib import Path
 import argparse
 

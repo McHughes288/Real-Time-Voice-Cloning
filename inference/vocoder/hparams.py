@@ -1,4 +1,4 @@
-from synthesizer.hparams import hparams as _syn_hp
+from inference.synthesizer.hparams import hparams as _syn_hp
 
 
 # Audio settings------------------------------------------------------------------------

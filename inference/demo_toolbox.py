@@ -1,6 +1,6 @@
 from pathlib import Path
-from toolbox import Toolbox
-from utils.argutils import print_args
+from inference.toolbox import Toolbox
+from inference.utils.argutils import print_args
 import argparse
 
 

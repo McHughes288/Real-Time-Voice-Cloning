@@ -1,6 +1,6 @@
-from synthesizer.tacotron2 import Tacotron2
-from synthesizer.hparams import hparams_debug_string
-from synthesizer.infolog import log
+from inference.synthesizer.tacotron2 import Tacotron2
+from inference.synthesizer.hparams import hparams_debug_string
+from inference.synthesizer.infolog import log
 import tensorflow as tf
 from tqdm import tqdm
 import time
