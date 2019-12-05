@@ -9,9 +9,11 @@ WORKDIR /app
 RUN apt update \
     && apt install -y software-properties-common \
     && add-apt-repository ppa:jonathonf/python-3.7 \
-    && apt update \
+    && apt update -y \
+    && apt upgrade -y \
     && apt install -y --no-install-recommends \
         build-essential \
+        libsndfile1 \
         python3.7 \
         python3-setuptools \
         python3.7-dev \
