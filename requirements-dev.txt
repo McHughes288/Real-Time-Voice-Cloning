@@ -1,0 +1,9 @@
+-r requirements-base.txt
+
+adafruit-circuitpython-charlcd
+gdown
+black
+flake8
+pylint
+pytest
+pytest-cov
