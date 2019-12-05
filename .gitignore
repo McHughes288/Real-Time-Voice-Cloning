@@ -14,7 +14,7 @@
 *.bcf
 *.toc
 *.wav
-!johns_voice.wav
+!johns_voice*.wav
 *.whl
 *.zip
 .vscode
