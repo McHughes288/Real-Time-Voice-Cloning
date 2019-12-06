@@ -8,7 +8,7 @@ rpi.initialise_lcd()
 
 # TODO while True, wait for button press
 
-rpi.lcd_display("Hackamatics 2019\nVoice Cloning", t=2)
+rpi.lcd_display("Hackamatics 2019\nVoice Cloning", t=5)
 
 duration = 10
 recording_path = rpi.record_voice(duration, playback=True)
