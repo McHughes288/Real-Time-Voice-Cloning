@@ -1,16 +1,15 @@
 from raspberry.pi import RaspberryPi
-import threading
 
 rpi = RaspberryPi()
 vc_url = "http://code19.cantabresearch.com:8080/jobs"  # "http://localhost:8080/jobs"
 gpt2_url = None
+reset = None
 
 try:
     rpi.initialise_lcd()
-
     while True:
-        reset = False
-        # welcome message
+        # initialise lcd and welcome message
+        rpi.lcd.color = [100, 100, 100]
         rpi.lcd_display("Hackamatics 2019\nVoice Cloning")
 
         # wait for select button
@@ -26,8 +25,10 @@ try:
 
         # check user wants to continue
         rpi.lcd_display("Are you happy\n with recording?")
+        
         while True:
             if rpi.lcd.select_button == True:
+                reset = False
                 break
             elif rpi.lcd.left_button == True:
                 reset = True
@@ -46,8 +47,9 @@ try:
         rpi.play_sound(output_path)
 
         # turn off lcd
-        rpi.lcd_display("Thanks for using\n voice cloning!", t=3)
+        rpi.lcd_display("Thanks for using\n voice cloner!", t=3)
         rpi.reset()
+        time.sleep(1)
 
 except Exception as e:
     rpi.reset()
