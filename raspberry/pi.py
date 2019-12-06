@@ -1,20 +1,21 @@
-import requests
-import librosa
+import json
 import time
 from datetime import datetime
+
 import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
 import board
 import busio
-import sounddevice as sd
+import librosa
 import numpy as np
-import json
+import requests
+import sounddevice as sd
 
 
 class RaspberryPi:
     def __init__(self):
         self.lcd = None
 
-    def initialise_lcd(lcd_columns=16, lcd_rows=2):
+    def initialise_lcd(self, lcd_columns=16, lcd_rows=2):
         print("Initialising lcd...")
         # Initialise I2C bus.
         i2c = busio.I2C(board.SCL, board.SDA)
@@ -23,7 +24,7 @@ class RaspberryPi:
         self.lcd.clear()
         self.lcd.color = [100, 100, 100]
 
-    def lcd_display(message, scroll=False, t=None, blink=False):
+    def lcd_display(self, message, scroll=False, t=None, blink=False):
         print(message)
         if self.lcd is not None:
             self.lcd.clear()
@@ -35,10 +36,10 @@ class RaspberryPi:
                     self.lcd.move_left()
                 self.lcd.clear()
                 self.lcd.message = message
-            if delay:
-                time.sleep(delay)
+            if t:
+                time.sleep(t)
 
-    def record_voice(duration, fs=16000, playback=False):
+    def record_voice(self, duration, fs=16000, playback=False):
         print("Recording voice...")
         # record voice for specified duration
         myrecording = sd.rec(duration * fs, samplerate=fs, channels=1, dtype="float32")
@@ -54,20 +55,21 @@ class RaspberryPi:
 
         # save file with timestamp
         now = datetime.now()
-        date_time = now.strftime("%Y/%m/%d_%H:%M:%S")
+        date_time = now.strftime("%Y-%m-%d_%H.%M.%S")
         rec_path = "output/recording_%s.wav" % date_time
         print("Saving recording %s..." % rec_path)
         librosa.output.write_wav(rec_path, myrecording, fs)
 
         return rec_path
 
-    def predict_text_gpt2(gpt2_url, recording_path):
+    def predict_text_gpt2(self, gpt2_url, recording_path):
         self.lcd_display("Predicting text...\n using GPT2!")
+        print(gpt2_url, recording_path)
         # TODO add David's container here!
         response = "This is a test from the rpi using a recorded voice."
         return response
 
-    def clone_voice(url, recording_path, text_to_synthesize):
+    def clone_voice(self, url, recording_path, text_to_synthesize):
         self.lcd_display("Cloning voice...\nand synthesizing text.")
         response = requests.post(
             url,

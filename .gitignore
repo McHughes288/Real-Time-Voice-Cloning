@@ -17,6 +17,7 @@
 !johns_*.wav
 *.whl
 *.zip
+*.DS_store
 .vscode
 ut_results.xml
 build
