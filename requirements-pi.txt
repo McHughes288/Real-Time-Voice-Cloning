@@ -4,3 +4,7 @@ librosa
 sounddevice
 pydub
 numpy
+asyncio
+dataclasses
+typing
+smwebsocket

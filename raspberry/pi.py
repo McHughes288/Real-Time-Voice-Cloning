@@ -12,6 +12,66 @@ import sounddevice as sd
 from pydub import AudioSegment
 from pydub.playback import play
 
+import asyncio
+from dataclasses import dataclass
+from typing import List
+import sys
+
+import smwebsocket
+import smwebsocket.client as client
+import smwebsocket.models
+from smwebsocket.models import ServerMessageType
+
+@dataclass
+class Transcripts:
+    text: str
+    json: List[dict]
+
+def add_printing_handlers(api, transcripts, enable_partials=False,
+                          speaker_change_token=False):
+    """
+    Adds a set of handlers to the websocket client which print out transcripts as they
+    are received. This includes partials if they are enabled.
+
+    Args:
+        api (smwebsocket.client.WebsocketClient): Client instance.
+        transcripts (Transcripts): Allows the transcripts to be concatenated to produce
+            a final result.
+        enable_partials (bool, optional): Whether or not partials are enabled.
+        speaker_change_token (bool, optional): Whether to explicitly include a speaker change
+            token '<sc>' in the output to indicate speaker changes.
+    """
+    def partial_transcript_handler(message):
+        # "\n" does not appear in partial transcripts
+        print(f'{message["metadata"]["transcript"]}', end='\r', file=sys.stderr)
+
+    def transcript_handler(message):
+        transcripts.json.append(message)
+        transcript = message["metadata"]["transcript"]
+        if transcript:
+            transcript_to_print = transcript
+            if speaker_change_token:
+                transcript_with_sc_token = transcript.replace("\n", "\n<sc>\n")
+                transcript_to_print = transcript_with_sc_token
+            transcripts.text += transcript_to_print
+            print(transcript_to_print)
+
+        n_best_results = message.get("n_best_results", [])
+        if n_best_results:
+            n_best_list = n_best_results[0]["n_best_list"]
+            for alternative in n_best_list:
+                words_joined = ' '.join((word["content"] for word in alternative["words"]))
+                print("* [{:.4f}] {}".format(alternative["confidence"], words_joined))
+            print()
+
+    def end_of_transcript_handler(_):
+        if enable_partials:
+            print("\n", file=sys.stderr)
+
+    api.add_event_handler(ServerMessageType.AddPartialTranscript, partial_transcript_handler)
+    api.add_event_handler(ServerMessageType.AddTranscript, transcript_handler)
+    api.add_event_handler(ServerMessageType.EndOfTranscript, end_of_transcript_handler)
+
 
 class RaspberryPi:
     def __init__(self):
@@ -52,7 +112,7 @@ class RaspberryPi:
         # plt.clf()
 
 
-    def record_voice(self, duration, fs=44100):
+    def record_voice(self, duration, fs=16000):
         print("Recording voice...")
         # record voice for specified duration
         self.lcd_display("Speak into mic.\n Duration: %is" % duration)
@@ -71,12 +131,34 @@ class RaspberryPi:
 
         return rec_path
 
-    def predict_text_gpt2(self, gpt2_url, recording_path):
+    def predict_text_gpt2(self, gpt2_url, uni_asr_url, recording_path):
         self.lcd_display("Predicting text...\n using GPT2!")
-        print(gpt2_url, recording_path)
-        # TODO add David's container here!
-        response = "Once upon a time, three people decided to slay a big scary dragon"
-        return response
+        print(gpt2_url, uni_asr_url, recording_path)
+
+        api = client.WebsocketClient(
+        smwebsocket.models.ConnectionSettings(
+            url=uni_asr_url,
+            ssl_context=None))
+
+        transcripts = Transcripts(text="", json=[])
+        add_printing_handlers(api, transcripts, enable_partials=True)
+        stream = sys.stdin.buffer
+        # use a file for testing
+        stream = open(recording_path, "rb")
+        thing_to_await = api.run(
+            stream,
+            smwebsocket.models.TranscriptionConfig(language='en'),
+            smwebsocket.models.AudioSettings()
+        )
+        asyncio.run(asyncio.wait_for(thing_to_await, timeout=20))
+
+        # if this line fails you need to setup gpt-2
+        response = requests.post(
+            gpt2_url,
+            data=transcripts.text,
+            timeout=60)
+
+        return response.text
 
     def clone_voice(self, url, recording_path, text_to_synthesize):
         self.lcd_display("Cloning voice...\nand synthesizing text.")

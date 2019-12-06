@@ -3,7 +3,8 @@ import time
 
 rpi = RaspberryPi()
 vc_url = "http://code19.cantabresearch.com:8080/jobs"  # "http://localhost:8080/jobs"
-gpt2_url = None
+uni_asr_url = "ws://code20.cantabresearch.com:9000/v2"
+gpt2_url = "http://code20.cantabresearch.com:5000/tell_a_tale"
 reset = None
 
 try:
@@ -37,8 +38,15 @@ try:
         if reset == True:
             continue
 
+        # recording_path = "output/recording_2019-12-06_17.54.37.wav"
         # get text prediction from GPT2
-        text_to_synthesize = rpi.predict_text_gpt2(gpt2_url, recording_path)
+        text = rpi.predict_text_gpt2(gpt2_url, uni_asr_url, recording_path) 
+        # text_to_synthesize = "Once upon a time, three people decided to slay a big scary dragon"
+        print(text)
+        text_to_synthesize = text.split("\n")[2].split(".")[0]
+        print(text_to_synthesize)
+
+        
 
         # clone voice and synthesize text
         output_path = rpi.clone_voice(vc_url, recording_path, text_to_synthesize)
@@ -55,3 +63,11 @@ try:
 except Exception as e:
     rpi.reset()
     print("Caught exception: %s" % repr(e))
+
+
+# from raspberry.pi import RaspberryPi
+# rpi = RaspberryPi()
+# uni_asr_url = "ws://code20.cantabresearch.com:9000/v2"
+# gpt2_url = "http://code20.cantabresearch.com:5000/tell_a_tale"
+# recording_path = "output/output_2019-12-06_14.40.52.wav"
+# text_to_synthesize = rpi.predict_text_gpt2(gpt2_url, uni_asr_url, recording_path)
