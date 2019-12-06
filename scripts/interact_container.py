@@ -1,12 +1,15 @@
-import requests
-import numpy as np
 import json
-import sounddevice as sd
-import librosa
-from datetime import datetime 
 import time
+from datetime import datetime
 
-playback = False
+import librosa
+import numpy as np
+import requests
+import sounddevice as sd
+from pydub import AudioSegment
+from pydub.playback import play
+
+playback = True
 
 duration = 5
 fs = 16000
@@ -16,16 +19,17 @@ for dur in range(duration, 0, -1):
     time.sleep(1)
 sd.wait()
 
-if playback:
-    print("Playback...")
-    sd.play(myrecording, fs)
-    sd.wait()
-
+# save recording
 now = datetime.now()
 date_time = now.strftime("%Y-%m-%d_%H.%M.%S")
 rec_path = "output/recording_%s.wav" % date_time
 print("Saving recording %s..." % rec_path)
 librosa.output.write_wav(rec_path, myrecording, fs)
+
+if playback:
+    print("Playback...")
+    rec = AudioSegment.from_wav(rec_path)
+    play(rec)
 
 # rec_path = "/Users/johnh/git/voice_cloning/functests/data/johns_voice3.wav"
 
@@ -40,9 +44,12 @@ json_response = response.json()
 data = json.loads(json_response)["result"]
 cloned_voice = np.array(data["generated_voice"]).astype(np.float32)
 output_fs = data["sample_rate"]
-librosa.output.write_wav("output/output_%s.wav" % date_time, cloned_voice, output_fs)
+
+# save output
+output_path = "output/output_%s.wav" % date_time
+librosa.output.write_wav(output_path, cloned_voice, output_fs)
 print(cloned_voice.shape)
 if playback:
     print("Playing cloned voice...")
-    sd.play(cloned_voice, output_fs)
-    sd.wait()
+    output = AudioSegment.from_wav(output_path)
+    play(output)
