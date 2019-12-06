@@ -15,3 +15,5 @@ echo "Installing requirements..."
 pip3 install -r $ROOT_CLONE/requirements-pi.txt
 
 mkdir -p $ROOT_CLONE/output
+
+python demo_pi.py

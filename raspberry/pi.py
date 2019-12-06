@@ -26,10 +26,11 @@ class RaspberryPi:
         self.lcd.clear()
         self.lcd.color = [100, 100, 100]
 
-    def lcd_display(self, message, scroll=False, t=None, blink=False):
+    def lcd_display(self, message, clear=True, scroll=False, t=None, blink=False):
         print(message)
         if self.lcd is not None:
-            self.lcd.clear()
+            if clear:
+                self.lcd.clear()
             self.lcd.blink = blink
             self.lcd.message = message
             if scroll:
@@ -40,13 +41,21 @@ class RaspberryPi:
                 self.lcd.message = message
             if t:
                 time.sleep(t)
+    
+    def play_sound(self, wav_file):
+        self.lcd_display("Playing audio...")
+        audio = AudioSegment.from_wav(wav_file)
+        play(audio)
 
-    def record_voice(self, duration, fs=16000, playback=False):
+
+    def record_voice(self, duration, fs=44100):
         print("Recording voice...")
         # record voice for specified duration
+        self.lcd_display("Speak into mic.\n Duration: %is" % duration)
+        time.sleep(0.5)
         myrecording = sd.rec(duration * fs, samplerate=fs, channels=1, dtype="float32")
-        for dur in range(duration, 0, -1):
-            self.lcd_display("Speak into mic.\nTime left: %is" % dur, t=1)
+        for dur in range(duration-1, 0, -1):
+            self.lcd_display("Speak into mic.\nTime left: %is" % dur, clear=False)
         sd.wait()
 
         # save file with timestamp
@@ -55,12 +64,6 @@ class RaspberryPi:
         rec_path = "output/recording_%s.wav" % date_time
         print("Saving recording %s..." % rec_path)
         librosa.output.write_wav(rec_path, myrecording, fs)
-
-        # play the sound back
-        if playback:
-            print("Playing the recording back...")
-            rec = AudioSegment.from_wav(rec_path)
-            play(rec)
 
         return rec_path
 
@@ -73,23 +76,24 @@ class RaspberryPi:
 
     def clone_voice(self, url, recording_path, text_to_synthesize):
         self.lcd_display("Cloning voice...\nand synthesizing text.")
+        # send post request to voice cloning container
         response = requests.post(
             url,
             files={"audio": open(recording_path, 'rb')},
             data={"text": text_to_synthesize},
         )
         json_response = response.json()
+        # get the data
         data = json.loads(json_response)["result"]
         cloned_voice = np.array(data["generated_voice"]).astype(np.float32)
         output_fs = data["sample_rate"]
-
-        # save and play cloned voice
+        # save cloned voice
         output_path = recording_path.replace("recording", "output")
         librosa.output.write_wav(output_path, cloned_voice, output_fs)
-        self.lcd_display("Playing your...\ncloned voice!")
-        output = AudioSegment.from_wav(output_path)
-        play(output)
+
+        return output_path
     
     def reset(self):
+        # clear lcd and turn off back light
         self.lcd.clear()
         self.lcd.color = [0, 0, 0]
