@@ -45,7 +45,7 @@ class RaspberryPi:
     def play_sound(self, wav_file):
         self.lcd_display("Playing audio...")
         audio = AudioSegment.from_wav(wav_file)
-        play(audio)
+        play(audio.low_pass_filter(1000))
 
 
     def record_voice(self, duration, fs=44100):
@@ -54,7 +54,7 @@ class RaspberryPi:
         self.lcd_display("Speak into mic.\n Duration: %is" % duration)
         time.sleep(0.5)
         myrecording = sd.rec(duration * fs, samplerate=fs, channels=1, dtype="float32")
-        for dur in range(duration-1, 0, -1):
+        for dur in range(duration-2, 0, -1):
             self.lcd_display("Speak into mic.\nTime left: %is" % dur, clear=False)
         sd.wait()
 
