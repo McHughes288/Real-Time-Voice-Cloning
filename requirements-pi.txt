@@ -3,3 +3,4 @@ requests
 librosa
 sounddevice
 pydub
+numpy

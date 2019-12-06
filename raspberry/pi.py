@@ -43,9 +43,13 @@ class RaspberryPi:
                 time.sleep(t)
     
     def play_sound(self, wav_file):
-        self.lcd_display("Playing audio...")
+        self.lcd_display("Playing audio...")        
         audio = AudioSegment.from_wav(wav_file)
-        play(audio.low_pass_filter(1000))
+        play(audio)
+        # seg = np.array(audio.get_array_of_samples())        
+        # fig1 = plt.plot(seg)
+        # plt.savefig("output/fig1.png")
+        # plt.clf()
 
 
     def record_voice(self, duration, fs=44100):
@@ -54,7 +58,7 @@ class RaspberryPi:
         self.lcd_display("Speak into mic.\n Duration: %is" % duration)
         time.sleep(0.5)
         myrecording = sd.rec(duration * fs, samplerate=fs, channels=1, dtype="float32")
-        for dur in range(duration-2, 0, -1):
+        for dur in range(duration-1, 0, -1):
             self.lcd_display("Speak into mic.\nTime left: %is" % dur, clear=False)
         sd.wait()
 
@@ -71,7 +75,7 @@ class RaspberryPi:
         self.lcd_display("Predicting text...\n using GPT2!")
         print(gpt2_url, recording_path)
         # TODO add David's container here!
-        response = "The quick brown fox jumped over the lazy dog"
+        response = "Once upon a time, three people decided to slay a big scary dragon"
         return response
 
     def clone_voice(self, url, recording_path, text_to_synthesize):
@@ -87,6 +91,8 @@ class RaspberryPi:
         data = json.loads(json_response)["result"]
         cloned_voice = np.array(data["generated_voice"]).astype(np.float32)
         output_fs = data["sample_rate"]
+        # remove high pitch problem
+        cloned_voice[np.where(np.abs(cloned_voice) > cloned_voice.mean()+cloned_voice.std()*2)] = 0
         # save cloned voice
         output_path = recording_path.replace("recording", "output")
         librosa.output.write_wav(output_path, cloned_voice, output_fs)

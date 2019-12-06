@@ -1,4 +1,5 @@
 from raspberry.pi import RaspberryPi
+import time
 
 rpi = RaspberryPi()
 vc_url = "http://code19.cantabresearch.com:8080/jobs"  # "http://localhost:8080/jobs"
@@ -17,7 +18,7 @@ try:
             pass
 
         # record from microphone
-        duration = 5
+        duration = 8
         recording_path = rpi.record_voice(duration)
 
         # play recording back

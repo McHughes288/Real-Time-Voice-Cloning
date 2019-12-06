@@ -11,7 +11,7 @@ from pydub.playback import play
 
 playback = True
 
-duration = 5
+duration = 6
 fs = 16000
 myrecording = sd.rec(duration * fs, samplerate=fs, channels=1, dtype="float32")
 for dur in range(duration, 0, -1):
@@ -34,7 +34,7 @@ if playback:
 # rec_path = "/Users/johnh/git/voice_cloning/functests/data/johns_voice3.wav"
 
 print("Cloning voice...")
-text_to_synthesize = "The quick brown fox jumped over the lazy dog"
+text_to_synthesize = "Once upon a time, three people decided to slay a big scary dragon"
 response = requests.post(
     "http://code19.cantabresearch.com:8080/jobs",
     files={"audio": open(rec_path, 'rb')},
