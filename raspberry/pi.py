@@ -9,6 +9,8 @@ import librosa
 import numpy as np
 import requests
 import sounddevice as sd
+from pydub import AudioSegment
+from pydub.playback import play
 
 
 class RaspberryPi:
@@ -47,12 +49,6 @@ class RaspberryPi:
             self.lcd_display("Speak into mic.\nTime left: %is" % dur, t=1)
         sd.wait()
 
-        # play the sound back
-        if playback:
-            print("Playing the recording back...")
-            sd.play(myrecording, fs)
-            sd.wait()
-
         # save file with timestamp
         now = datetime.now()
         date_time = now.strftime("%Y-%m-%d_%H.%M.%S")
@@ -60,13 +56,19 @@ class RaspberryPi:
         print("Saving recording %s..." % rec_path)
         librosa.output.write_wav(rec_path, myrecording, fs)
 
+        # play the sound back
+        if playback:
+            print("Playing the recording back...")
+            rec = AudioSegment.from_wav(rec_path)
+            play(rec)
+
         return rec_path
 
     def predict_text_gpt2(self, gpt2_url, recording_path):
         self.lcd_display("Predicting text...\n using GPT2!")
         print(gpt2_url, recording_path)
         # TODO add David's container here!
-        response = "This is a test from the rpi using a recorded voice."
+        response = "The quick brown fox jumped over the lazy dog"
         return response
 
     def clone_voice(self, url, recording_path, text_to_synthesize):
@@ -85,5 +87,9 @@ class RaspberryPi:
         output_path = recording_path.replace("recording", "output")
         librosa.output.write_wav(output_path, cloned_voice, output_fs)
         self.lcd_display("Playing your...\ncloned voice!")
-        sd.play(cloned_voice, output_fs)
-        sd.wait()
+        output = AudioSegment.from_wav(output_path)
+        play(output)
+    
+    def reset(self):
+        self.lcd.clear()
+        self.lcd.color = [0, 0, 0]

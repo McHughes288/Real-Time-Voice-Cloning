@@ -2,3 +2,4 @@ adafruit-circuitpython-charlcd
 requests
 librosa
 sounddevice
+pydub
