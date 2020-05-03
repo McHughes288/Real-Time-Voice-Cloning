@@ -1,0 +1,17 @@
+tensorflow>=1.10.0,<=1.14.0
+torch
+umap-learn
+visdom
+soundfile
+librosa
+matplotlib
+numpy
+scipy
+tqdm
+sounddevice
+Unidecode
+inflect
+multiprocess
+numba
+connexion
+webrtcvad

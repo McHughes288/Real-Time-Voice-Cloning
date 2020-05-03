@@ -1,0 +1,78 @@
+---
+swagger: "2.0"
+info:
+  description: "The Voice Cloning REST API is used to submit recorded audio and text to speak. \
+    It returns the synthesized voice."
+  version: "0.1.0"
+  title: "Voice Cloning REST API"
+  contact:
+    email: "johnh@speechmatics.com"
+basePath: "/"
+schemes:
+- "https"
+produces:
+- "application/json"
+- "text/plain"
+paths:
+  /jobs:
+    post:
+      tags:
+      - "batch_api"
+      summary: "Create a new job."
+      operationId: "apis.batch.controllers.batch_api.jobs_post"
+      consumes:
+      - "multipart/form-data"
+      parameters:
+      - name: "audio"
+        in: "formData"
+        description: "The recorded audio file for embedding creation."
+        required: true
+        type: "file"
+      - name: "text"
+        in: "formData"
+        description: "The text to synthesize with the cloned voice"
+        required: true
+        type: "string"
+      responses:
+        201:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/JobResponse"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+          examples:
+            application/json:
+              code: 400
+              error: "Requested product not available"
+        500:
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+          examples:
+            application/json:
+              code: 500
+              error: "Internal Server Error"
+definitions:
+  ErrorResponse:
+    type: "object"
+    required:
+    - "code"
+    - "error"
+    properties:
+      code:
+        type: "integer"
+        description: "The HTTP status code."
+        minimum: 100.0
+      error:
+        type: "string"
+        description: "The error message."
+  JobResponse:
+    type: "object"
+    required:
+    - "result"
+    properties:
+      result:
+        type: "string"
+        example: "{\"generated_voice\": np.ndarray, \"synthesizer_sample_rate\": 16000}"

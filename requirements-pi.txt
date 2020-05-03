@@ -1,0 +1,10 @@
+adafruit-circuitpython-charlcd
+requests
+librosa
+sounddevice
+pydub
+numpy
+asyncio
+dataclasses
+typing
+smwebsocket
